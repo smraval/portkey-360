@@ -1,0 +1,9 @@
+{
+  "python.defaultInterpreterPath": "./venv/bin/python",
+  "python.terminal.activateEnvironment": true,
+  "python.analysis.extraPaths": ["./venv/lib/python3.9/site-packages"],
+  "python.linting.enabled": true,
+  "python.linting.pylintEnabled": false,
+  "python.linting.flake8Enabled": false,
+  "typescript.preferences.includePackageJsonAutoImports": "on"
+} 

@@ -1,0 +1,59 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://use.typekit.net/uhp5vku.css');
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #333333;
+  --color-primary: #72BFBA;
+  --color-secondary: #9CCFCC;
+  --color-tertiary: #71CB86;
+}
+
+
+
+* {
+  font-family: 'Aperçu', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: 'Aperçu', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.gradient-title {
+  background: linear-gradient(135deg, #71CB86 0%, #9CCFCC 50%, #72BFBA 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.primary-button {
+  background-color: var(--color-primary);
+  color: white;
+  transition: all 0.2s ease;
+}
+
+.primary-button:hover {
+  background-color: #5da8a3;
+  transform: translateY(-1px);
+}
+
+.primary-button:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.accent-text {
+  color: var(--color-primary);
+}
+
+.border-accent {
+  border-color: var(--color-primary);
+}
+
+.bg-accent-light {
+  background-color: rgba(114, 191, 186, 0.1);
+}
