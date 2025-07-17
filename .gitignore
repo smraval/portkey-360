@@ -46,3 +46,10 @@ __pycache__/
 *.py[cod]
 venv/
 .env
+node_modules/
+
+# Large binaries
+*.node
+*.wasm
+**/*.node
+**/*.wasm
