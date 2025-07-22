@@ -9,7 +9,7 @@ class Config:
     PORT: int = int(os.getenv("PORT", "8000"))
     CORS_ORIGINS: list = ["http://localhost:3000", "http://127.0.0.1:3000"]
     
-    MODEL_NAME: str = "stabilityai/stable-diffusion-2-1"
+    MODEL_NAME: str = "runwayml/stable-diffusion-v1-5"
     
     DEFAULT_INFERENCE_STEPS: int = int(os.getenv("INFERENCE_STEPS", "20"))
     DEFAULT_GUIDANCE_SCALE: float = float(os.getenv("GUIDANCE_SCALE", "7.5"))

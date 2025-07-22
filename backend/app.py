@@ -20,20 +20,43 @@ def enhance_prompt_for_panorama(prompt: str) -> str:
     return f"{prompt}, less grainy, less pixelated"
 
 def enhance_image_quality(image: Image.Image) -> Image.Image:
+    """Balanced brightness and natural colors"""
     try:
+        # Moderate brightness increase
         enhancer = ImageEnhance.Brightness(image)
-        image = enhancer.enhance(1.3)
+        image = enhancer.enhance(1.3)  # 30% brighter
         
+        # Gentle contrast boost
         enhancer = ImageEnhance.Contrast(image)
-        image = enhancer.enhance(1.1)
+        image = enhancer.enhance(1.1)  # Slight contrast
         
+        # Natural color enhancement - not oversaturated
         enhancer = ImageEnhance.Color(image)
-        image = enhancer.enhance(1.0)
+        image = enhancer.enhance(1.0)  # Keep natural colors
         
         return image
     except Exception as e:
         logger.warning(f"Image enhancement failed: {e}")
         return image
+
+# Safe device detection
+def get_device_and_dtype():
+    if torch.cuda.is_available():
+        return "cuda", torch.float16
+    elif hasattr(torch.backends, 'mps') and hasattr(torch.backends.mps, 'is_available') and torch.backends.mps.is_available():
+        return "mps", torch.float32
+    else:
+        return "cpu", torch.float32
+
+# Safe cache clearing
+def clear_cache(device):
+    try:
+        if device == "cuda" and torch.cuda.is_available():
+            torch.cuda.empty_cache()
+        elif device == "mps" and hasattr(torch, 'mps') and hasattr(torch.mps, 'empty_cache'):
+            torch.mps.empty_cache()
+    except Exception as e:
+        logger.warning(f"Cache clearing failed: {e}")
 
 Config.validate()
 
@@ -46,38 +69,27 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-if torch.cuda.is_available():
-    DEVICE = "cuda"
-    DTYPE = torch.float16
-elif torch.backends.mps.is_available():
-    DEVICE = "mps"
-    DTYPE = torch.float32
-else:
-    DEVICE = "cpu"
-    DTYPE = torch.float32
-
+DEVICE, DTYPE = get_device_and_dtype()
 pipe: Optional[StableDiffusionPipeline] = None
 
 def get_pipeline():
     global pipe
     if pipe is None:
         try:
+            logger.info(f"Loading model {Config.MODEL_NAME} on device {DEVICE}")
             pipe = StableDiffusionPipeline.from_pretrained(
                 Config.MODEL_NAME,
                 torch_dtype=DTYPE,
-                use_safetensors=True,
-                variant="fp16" if DTYPE == torch.float16 else None
+                safety_checker=None,
+                requires_safety_checker=False
             )
             
-            if not Config.ENABLE_SAFETY_CHECKER:
-                pipe.safety_checker = None
-            
             pipe.to(DEVICE)
-            
-            with torch.no_grad():
-                _ = pipe("warmup", num_inference_steps=1, guidance_scale=1.0)
+            pipe.enable_attention_slicing()
+            logger.info("Model loaded successfully")
                 
         except Exception as e:
+            logger.error(f"Model loading failed: {e}")
             raise HTTPException(status_code=500, detail=f"Model loading failed: {str(e)}")
 
     return pipe
@@ -98,12 +110,14 @@ async def generate(prompt: str = Body(..., embed=True)):
         enhanced_prompt = enhance_prompt_for_panorama(prompt)
         gen_params = Config.get_generation_params()
         
-        if Config.DEFAULT_SEED is not None:
-            gen_params["generator"] = torch.Generator(device=DEVICE).manual_seed(Config.DEFAULT_SEED)
-        else:
-            gen_params["generator"] = torch.Generator(device=DEVICE).manual_seed(42)
+        # Set seed
+        seed = Config.DEFAULT_SEED if Config.DEFAULT_SEED is not None else 42
+        gen_params["generator"] = torch.Generator(device=DEVICE).manual_seed(seed)
         
         negative_prompt = "blurry, low quality, bad quality"
+        
+        # Clear cache before generation
+        clear_cache(DEVICE)
         
         with torch.no_grad():
             result = pipeline(
@@ -122,14 +136,20 @@ async def generate(prompt: str = Body(..., embed=True)):
         b64 = base64.b64encode(buf.getvalue()).decode("utf-8")
         generation_time = time.time() - start_time
         
+        # Clear cache after generation
+        clear_cache(DEVICE)
+        
         return JSONResponse({
             "image_b64": b64,
             "generation_time": generation_time,
-            "prompt": prompt
+            "prompt": prompt,
+            "dimensions": f"{gen_params['width']}x{gen_params['height']}",
+            "panorama_mode": True
         })
         
     except Exception as e:
         logger.error(f"Generation failed: {e}")
+        clear_cache(DEVICE)
         raise HTTPException(status_code=500, detail=f"Generation failed: {str(e)}")
 
 if __name__ == "__main__":

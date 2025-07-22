@@ -66,7 +66,7 @@ export default function PanoramaViewer({ src, isLoading }: Props) {
       <CameraController />
       
       <Suspense fallback={<LoadingFallback />}>
-        <Sphere src={src} />
+      <Sphere src={src} />
       </Suspense>
       
       <OrbitControls 
