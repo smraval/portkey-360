@@ -65,11 +65,11 @@ export default function Home() {
       <div className="container mx-auto px-6 py-8">
         <div className="text-center mb-12">
           <h1 className="text-6xl font-bold mb-4 gradient-title" style={{ fontFamily: 'Apercu, sans-serif' }}>
-            Portkey360
+            portkey360
           </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto" style={{ fontFamily: 'Apercu, sans-serif' }}>
+          {/* <p className="text-xl text-gray-600 max-w-2xl mx-auto" style={{ fontFamily: 'Apercu, sans-serif' }}>
           🪄
-          </p>
+          </p> */}
         </div>
         <div className="max-w-4xl mx-auto mb-12">
           <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
@@ -83,9 +83,7 @@ export default function Home() {
                   onKeyPress={handleKeyPress}
                   disabled={isLoading}
                 />
-                <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm">
-                  Press Enter ↵
-                </div>
+  
               </div>
               <button
                 className={`px-8 py-4 rounded-xl text-lg font-medium transition-all duration-200 ${
