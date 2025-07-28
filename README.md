@@ -65,7 +65,6 @@ _then_ open via http://localhost:3000
 - **backend**: fastAPI, pyTorch, diffusers library  
 - **frontend**: next.js, three.js, react three fiber
 - **3D rendering**: webGL panorama viewer
-- **acceleration**: MPS (apple silicon) or CUDA (nvidia)
 
 
 
