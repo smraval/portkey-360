@@ -30,14 +30,26 @@ body {
   background-clip: text;
 }
 
+.accent-text {
+  color: #a0b38c;
+}
+
+.border-accent {
+  border-color: #a0b38c;
+}
+
+.bg-accent-light {
+  background-color: rgba(160, 179, 140, 0.1);
+}
+
 .primary-button {
-  background-color: var(--color-primary);
+  background-color: #a0b38c;
   color: white;
   transition: all 0.2s ease;
 }
 
 .primary-button:hover {
-  background-color: #5da8a3;
+  background-color: #8a9d7a;
   transform: translateY(-1px);
 }
 

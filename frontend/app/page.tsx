@@ -156,8 +156,8 @@ export default function Home() {
               <button
                 className={`px-8 py-4 rounded-xl text-lg font-medium transition-all duration-200 ${
                   isLoading
-                    ? "primary-button"
-                    : "primary-button hover:shadow-lg"
+                    ? "bg-[#a0b38c] text-white"
+                    : "bg-[#a0b38c] hover:bg-[#8a9d7a] text-white hover:shadow-lg"
                 }`}
                 onClick={generate}
                 disabled={isLoading}
