@@ -40,12 +40,6 @@ npm run dev
 ```
 _then_ open via http://localhost:3000
 
-## requirements
-- python 3.9+
-- node.js 18+
-- 8GB+ RAM (for the AI model)
-- apple silicon mac (recommended) or nvidia GPU
-
 ## problems 🔧
 
 **backend won't start?**
