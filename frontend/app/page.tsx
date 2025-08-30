@@ -2,6 +2,8 @@
 "use client";
 import { useState } from "react";
 import dynamic from "next/dynamic";
+import Navbar from "../components/Navbar";
+import Link from "next/link";
 
 interface ViewerProps { 
   src: string;
@@ -19,6 +21,13 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [generationTime, setGenerationTime] = useState<number | null>(null);
+
+  const scrollToPrompt = () => {
+    const promptSection = document.querySelector('[data-prompt-section]');
+    if (promptSection) {
+      promptSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   async function generate() {
     if (!prompt.trim()) {
@@ -61,29 +70,88 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-white text-gray-800">
-      <div className="container mx-auto px-6 py-8">
-        <div className="text-center mb-12">
-          <h1 className="text-6xl font-bold mb-4 gradient-title" style={{ fontFamily: 'Apercu, sans-serif' }}>
-            portkey360
-          </h1>
-          {/* <p className="text-xl text-gray-600 max-w-2xl mx-auto" style={{ fontFamily: 'Apercu, sans-serif' }}>
-          🪄
-          </p> */}
+    <>
+      <Navbar />
+      <main className="min-h-screen bg-[#f4f3ec] text-gray-800 pt-24">
+        <div className="container mx-auto px-6 py-8">
+
+
+
+
+        <div className="max-w-6xl mx-auto">
+          <div className="bg-[#f4f3ec] rounded-2xl shadow-lg border border-[#cbcdb6] overflow-hidden">
+            <div className="p-6 border-b border-[#cbcdb6]">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xl font-bold accent-text" style={{ fontFamily: 'Apercu, sans-serif' }}>Your 360° Panorama</h3>
+                {imgSrc && (
+                  <div className="text-sm text-gray-500">
+                    Drag to explore • Scroll to zoom
+                  </div>
+                )}
+              </div>
+            </div>
+            
+            <div className="h-[70vh] bg-gray-50">
+              {isLoading && !imgSrc ? (
+                <div className="w-full h-full flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="mb-6">
+                      <img 
+                        src="/portkey.gif" 
+                        alt="Portkey Animation" 
+                        className="w-48 h-48 mx-auto"
+                        style={{ 
+                          objectFit: 'contain',
+                          animation: 'none',
+                          animationDuration: '3s',
+                          animationIterationCount: 'infinite'
+                        }}
+                        onLoad={(e) => {
+                          // Force GIF to restart and loop
+                          const img = e.target as HTMLImageElement;
+                          img.style.animation = 'none';
+                          img.offsetHeight; // Trigger reflow
+                          img.style.animation = '';
+                        }}
+                      />
+                    </div>
+                    <p className="text-2xl accent-text font-medium">Creating your panorama...</p>
+                    <p className="text-sm text-gray-500 mt-2">May take 45-60 seconds</p>
+                  </div>
+                </div>
+              ) : imgSrc ? (
+                <PanoramaViewer src={imgSrc} />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <div className="text-center text-gray-400">
+                    <div className="text-8xl mb-6">🌍</div>
+                    <p className="text-2xl font-light mb-2">Ready to teleport</p>
+                    <button
+                      onClick={scrollToPrompt}
+                      className="mt-3 px-4 py-2 rounded-full bg-transparent border-2 border-[#a0b38c] text-[#a0b38c] font-medium transition-all duration-300 hover:bg-[#a0b38c] hover:text-white hover:shadow-lg hover:scale-105"
+                    >
+                      Click here
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
-        <div className="max-w-4xl mx-auto mb-12">
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
+
+        {/* Prompt Section - Below the panorama */}
+        <div className="max-w-4xl mx-auto mt-16 mb-12" data-prompt-section>
+          <div className="bg-[#f4f3ec] rounded-2xl shadow-lg border border-[#cbcdb6] p-8">
             <div className="flex gap-4 mb-6">
               <div className="flex-1 relative">
                 <input
-                  className="w-full px-6 py-4 text-lg rounded-xl border-2 border-gray-200 focus:border-accent focus:outline-none transition-colors bg-gray-50 focus:bg-white"
+                  className="w-full px-6 py-4 text-lg rounded-xl border-2 border-[#cbcdb6] focus:border-[#a0b38c] focus:outline-none transition-colors bg-[#f4f3ec] focus:bg-white"
                   placeholder="Describe your panoramic vision... (e.g., 'a forest with a river')"
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
                   onKeyPress={handleKeyPress}
                   disabled={isLoading}
                 />
-  
               </div>
               <button
                 className={`px-8 py-4 rounded-xl text-lg font-medium transition-all duration-200 ${
@@ -105,7 +173,6 @@ export default function Home() {
               </button>
             </div>
 
-
             {error && (
               <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
                 <div className="flex items-center gap-2">
@@ -116,14 +183,13 @@ export default function Home() {
             )}
 
             {generationTime && (
-              <div className="mb-4 p-4 bg-accent-light border border-accent rounded-lg accent-text">
+              <div className="mb-4 p-4 bg-[#cbcdb6] border border-[#a0b38c] rounded-lg text-[#a0b38c]">
                 <div className="flex items-center gap-2">
                   <span>✨</span>
                   Generated in {generationTime.toFixed(2)} seconds
                 </div>
               </div>
             )}
-
 
             <div className="border-t border-gray-200 pt-6">
               <p className="text-sm text-gray-500 mb-3">Try these example prompts:</p>
@@ -135,7 +201,7 @@ export default function Home() {
                 ].map((example, index) => (
                   <button
                     key={index}
-                    className="px-4 py-2 text-sm bg-gray-100 hover:bg-accent-light hover:text-accent rounded-lg transition-colors border border-gray-200"
+                    className="px-4 py-2 text-sm bg-[#cbcdb6] hover:bg-[#a0b38c] hover:text-white rounded-lg transition-colors border border-[#a0b38c]"
                     onClick={() => setPrompt(example)}
                     disabled={isLoading}
                   >
@@ -147,48 +213,11 @@ export default function Home() {
           </div>
         </div>
 
-
-        <div className="max-w-6xl mx-auto">
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
-            <div className="p-6 border-b border-gray-200">
-              <div className="flex items-center justify-between">
-                <h3 className="text-xl font-bold accent-text" style={{ fontFamily: 'Apercu, sans-serif' }}>Your 360° Panorama</h3>
-                {imgSrc && (
-                  <div className="text-sm text-gray-500">
-                    Drag to explore • Scroll to zoom
-                  </div>
-                )}
-              </div>
-            </div>
-            
-            <div className="h-[70vh] bg-gray-50">
-              {isLoading && !imgSrc ? (
-                <div className="w-full h-full flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="w-16 h-16 border-4 border-accent border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                    <p className="text-lg accent-text font-medium">Creating your panorama...</p>
-                    <p className="text-sm text-gray-500 mt-2">This may take 45-60 seconds for high quality</p>
-                  </div>
-                </div>
-              ) : imgSrc ? (
-                <PanoramaViewer src={imgSrc} />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <div className="text-center text-gray-400">
-                    <div className="text-8xl mb-6">🌍</div>
-                    <p className="text-2xl font-light mb-2">Ready to teleport</p>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-
-
         <div className="text-center mt-16 text-gray-400 text-sm">
           <p>by shalini</p>
         </div>
       </div>
     </main>
+    </>
   );
 }

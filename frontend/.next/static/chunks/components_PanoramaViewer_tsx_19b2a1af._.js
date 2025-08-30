@@ -154,7 +154,7 @@ function PanoramaViewer(param) {
                 }, void 0, false, {
                     fileName: "[project]/components/PanoramaViewer.tsx",
                     lineNumber: 69,
-                    columnNumber: 9
+                    columnNumber: 7
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/components/PanoramaViewer.tsx",

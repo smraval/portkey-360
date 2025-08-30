@@ -3,11 +3,12 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
+  --background: #f4f3ec;
   --foreground: #333333;
-  --color-primary: #72BFBA;
-  --color-secondary: #9CCFCC;
-  --color-tertiary: #71CB86;
+  --color-primary: #a0b38c;
+  --color-secondary: #a0b38c;
+  --color-tertiary: #cbcdb6;
+  --sage: #a0b38c;
 }
 
 
@@ -23,7 +24,7 @@ body {
 }
 
 .gradient-title {
-  background: linear-gradient(135deg, #71CB86 0%, #9CCFCC 50%, #72BFBA 100%);
+  background: linear-gradient(135deg, #a0b38c 0%, #cbcdb6 50%, #f4f3ec 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -56,4 +57,16 @@ body {
 
 .bg-accent-light {
   background-color: rgba(114, 191, 186, 0.1);
+}
+
+.border-sage {
+  border-color: var(--sage);
+}
+
+.text-sage {
+  color: var(--sage);
+}
+
+.bg-sage {
+  background-color: var(--sage);
 }
